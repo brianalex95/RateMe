@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RateMe</title>
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/grading.css">
+
+<link rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+	integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+	crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+	integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+	crossorigin=""></script>
+
+<script src="js/map.js"></script>
+<script src="js/register.js"></script>
+<script src="js/user.js"></script>
+<script src="js/rating.js"></script>
+
+
+
+</head>
+<body>
+	<div class="mainContainer">
+		<header>
+			<div id="access">
+				<span style="white-space: nowrap"> Benutzer: <input
+					id="userNameLogin" type="text" required />
+				</span> <span style="white-space: nowrap"> Password: <input
+					id="passwordLogin" type="password" required />
+				</span>
+				<button id="btnlogin" type="button" style="width: 100px;"
+					onclick="login()">Anmelden</button>
+				<button id="btnlogout" type="button" style="width: 100px;"
+					onclick="logout()">Abmelden</button>
+				<span id="errorAccess"></span> <span
+					style="float: right; white-space: nowrap"> <a
+					href="javascript:showRegistration()"> Als neuer Benutzer
+						registrieren</a></span>
+			</div>
+		</header>
+		<article>
+			<div id="mapid" style="height: 100%;"></div>
+		</article>
+		<aside>
+			<h1 id=poiname></h1>
+			<button id=moreinfo onclick="showmoreinfo()">Infos zeigen</button>
+			<button id=moreinfo onclick="hidemoreinfo()">Infos
+				verstecken</button>
+			<table id=poitag style="display: none">
+			</table>
+			<div id="rate" style="display: none">
+				<table>
+					<tr>
+						<td colspan="2" align="center"><h3>Bewertung abgeben</h3></td>
+					</tr>
+					<tr>
+						<td><label for="betreff"> Bewertung: </label></td>
+						<td><fieldset class="rating">
+								<legend>Please rate:</legend>
+								<input type="radio" id="star5" name="rating" value="5" /><label
+									for="star5" title="Rocks!">5 stars</label> <input type="radio"
+									id="star4" name="rating" value="4" /><label for="star4"
+									title="Pretty good">4 stars</label> <input type="radio"
+									id="star3" name="rating" value="3" /><label for="star3"
+									title="Meh">3 stars</label> <input type="radio" id="star2"
+									name="rating" value="2" /><label for="star2" title="Kinda bad">2
+									stars</label> <input type="radio" id="star1" name="rating" value="1" /><label
+									for="star1" title="Sucks big time">1 star</label>
+							</fieldset></td>
+					</tr>
+					<tr>
+						<td><label for="text"> Kommentar: </label></td>
+						<td><textarea id="content" cols="30" rows="4"></textarea></td>
+					</tr>
+					<tr>
+						<td><label for="image"> Bild: </label></td>
+						<td><input type="file" id="fileUpload" accept="image/png" onchange="addImage()"></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td><div id="errorImage"></div></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<button type="button" onclick="addRating()">Hinzufügen</button>
+					</tr>
+				</table>
+			</div>
+			<div id="divpoirating" class="divpoirating" >
+			<h1>Bewertungen</h1>
+				<table id=poiratings >
+				</table>
+			</div>
+
+
+		</aside>
+		<footer>
+			<table id=myratings width=100% table-layout=fixed
+				style="display: block"></table>
+		</footer>
+	</div>
+
+	<div id="registration" style="display: none">
+		<h1>Nutzer Registrieren</h1>
+		<table>
+			<tr>
+				<td>Vorname</td>
+				<td><input id="firstname" type="text"
+					onkeyup="checkFirstname()" onblur="checkFirstnameOnBlur()"
+					onfocus="checkFirstnameOnFocus()"></td>
+				<td><div id="errorFirstname"></div></td>
+			</tr>
+			<tr>
+				<td>Name</td>
+				<td><input id="lastname" type="text" onkeyup="checkLastname()"
+					onblur="checkLastnameOnBlur()" onfocus="checkLastnameOnFocus()"></td>
+				<td><div id="errorLastname"></div></td>
+			</tr>
+			<tr>
+				<td>Straße</td>
+				<td><input type="text" id="street" size="10" /> <span
+					style="float: right;"> Nr: <input type="text" id="streetNr"
+						size="1" />
+				</span></td>
+			</tr>
+			<tr>
+				<td>PLZ</td>
+				<td><input id="plz" type="text" onkeyup="checkPlz()"
+					onblur="checkPlzOnBlur()" size="1" onfocus="checkPlzOnFocus()" />
+					<span style="float: right;"> Ort <input type="text"
+						id="city" size="10" />
+				</span></td>
+				<td>
+					<div id="errorPlz"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>Telefon</td>
+				<td><input id="telefon" type="text" onkeyup="checkTelefon()"
+					onblur="checkTelefonOnBlur()" onfocus="checkTelefonOnFocus()"></td>
+				<td><div id="errorTelefon"></div></td>
+			</tr>
+			<tr>
+				<td>E-Mail-Adresse</td>
+				<td><input id="email" type="text" onkeyup="checkEmail()"
+					onblur="checkEmailOnBlur()" onfocus="checkEmailOnFocus()"></td>
+				<td><div id="errorEmail"></div></td>
+			</tr>
+			<tr>
+				<td>Benutzername</td>
+				<td><input id="username" type="text" onkeyup="checkUsername()"
+					onblur="checkUsernameOnBlur()" onfocus="checkUsernameOnFocus()"></td>
+				<td><div id="errorUsername"></div></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input id="passwd" type="password"
+					onkeyup="checkPassword()"></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><canvas id="pwdCanvas" width="80" height="10"
+						style="border: 1px solid #d3d3d3;"></canvas> &nbsp; <span
+					id="passwdMsg">unsicher</span></td>
+			</tr>
+		</table>
+		<p />
+		<button id="Abbrechen" onclick="hideRegistration()">Abbrechen</button>
+		<button id="btn" type="button" onclick="register()">Daten
+			senden</button>
+	</div>
+</body>
+
+
+</html>
